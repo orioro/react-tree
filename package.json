@@ -1,0 +1,100 @@
+{
+  "name": "@orioro/react-tree",
+  "version": "0.0.0-semantic-release",
+  "description": "",
+  "keywords": [],
+  "homepage": "https://github.com/orioro/react-tree",
+  "bugs": "https://github.com/orioro/react-tree/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/orioro/react-tree.git"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "start-storybook -p 6006",
+    "build-storybook": "build-storybook",
+    "build": "rm -rf dist && rollup --config ./rollup/build.config.js && yarn tsc:declaration",
+    "prepare": "yarn build && yarn readme",
+    "readme": "readme",
+    "update-dependencies": "npx npm-check-updates -u",
+    "tsc:declaration": "tsc --declaration --emitDeclarationOnly --declarationDir dist",
+    "tsc:validate": "tsc --noEmit",
+    "commit": "cz",
+    "lint:eslint": "eslint src",
+    "lint:prettier": "prettier src --check",
+    "lint": "yarn lint:eslint && yarn lint:prettier",
+    "prettier": "prettier src",
+    "ci-check": "yarn tsc:validate && yarn lint"
+  },
+  "author": "",
+  "license": "ISC",
+  "files": [
+    "dist/**/*"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.17.5",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
+    "@babel/preset-typescript": "^7.16.7",
+    "@orioro/readme": "^1.0.1",
+    "@rollup/plugin-babel": "^5.3.1",
+    "@rollup/plugin-commonjs": "^21.0.2",
+    "@rollup/plugin-node-resolve": "^13.1.3",
+    "@storybook/addon-actions": "^6.4.19",
+    "@storybook/addon-essentials": "^6.4.19",
+    "@storybook/addon-links": "^6.4.19",
+    "@storybook/react": "^6.4.19",
+    "@types/jest": "^27.4.1",
+    "@types/node": "^17.0.21",
+    "@types/react": "^17.0.39",
+    "@types/react-dom": "^17.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.12.1",
+    "@typescript-eslint/parser": "^5.12.1",
+    "babel-loader": "^8.2.3",
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.9.0",
+    "eslint-config-prettier": "^8.4.0",
+    "husky": "^7.0.4",
+    "npm-check-updates": "^12.4.0",
+    "postcss": "^8.4.6",
+    "prettier": "^2.5.1",
+    "react-dom": "^17.0.2",
+    "react-is": "^17.0.2",
+    "rollup": "^2.68.0",
+    "rollup-plugin-postcss": "^4.0.2",
+    "semantic-release": "^19.0.2",
+    "typescript": "^4.5.5"
+  },
+  "dependencies": {
+    "@emotion/css": "^11.7.1",
+    "react": "^17.0.2"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/npm",
+      "@semantic-release/github"
+    ],
+    "branches": [
+      "+([0-9])?(.{+([0-9]),x}).x",
+      "main",
+      "next",
+      "next-major",
+      {
+        "name": "beta",
+        "prerelease": true
+      },
+      {
+        "name": "alpha",
+        "prerelease": true
+      }
+    ]
+  }
+}
