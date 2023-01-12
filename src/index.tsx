@@ -1,47 +1,44 @@
 import React, { createContext, useContext } from 'react'
 
-export type Node = {
+export type NodeAttributes = {
   id: string | number
-  childNodes?: Node[]
   [key: string]: any
 }
 
+export type Node = [NodeAttributes, Node[]]
+
 export type TreeContext = {
-  getChildNodes: (node: Node) => Node[]
   renderBranch: (
-    node: Node,
+    node: NodeAttributes,
     opts: {
       level: number
       index: number
       children: React.ReactNode
-      nodes: Node[]
     }
   ) => JSX.Element
   renderLeaf: (
-    node: Node,
+    node: NodeAttributes,
     opts: {
       level: number
       index: number
-      nodes: Node[]
     }
   ) => JSX.Element
 }
 
 export const DEFAULT_TREE_CONTEXT: TreeContext = {
-  getChildNodes: (node) => node.childNodes || [],
-  renderLeaf: (node, { level }) => (
-    <div className='TreeNode TreeNode--Leaf'>
-      <div className='TreeNode__Label'>
-        {node.id} ({level})
-      </div>
-    </div>
-  ),
-  renderBranch: (node, { children, level }) => (
+  renderBranch: (nodeAttributes, { children, level }) => (
     <div className='TreeNode TreeNode--Branch'>
       <div className='TreeNode__Label'>
-        {node.id} ({level})
+        {nodeAttributes.id} ({level})
       </div>
       <div className='TreeNode__ChildNodeContainer'>{children}</div>
+    </div>
+  ),
+  renderLeaf: (nodeAttributes, { level }) => (
+    <div className='TreeNode TreeNode--Leaf'>
+      <div className='TreeNode__Label'>
+        {nodeAttributes.id} ({level})
+      </div>
     </div>
   ),
 }
@@ -58,13 +55,7 @@ export const TreeNodeList = ({
   return (
     <React.Fragment>
       {nodes.map((node, index, nodes) => (
-        <TreeNode
-          key={node.id}
-          node={node}
-          level={level}
-          index={index}
-          nodes={nodes}
-        />
+        <TreeNode key={node[0].id} node={node} level={level} index={index} />
       ))}
     </React.Fragment>
   )
@@ -72,30 +63,25 @@ export const TreeNodeList = ({
 TreeNodeList.displayName = 'TreeNodeList'
 
 export const TreeNode = ({
-  node,
+  node: [nodeAttributes, childNodes],
   level = 0,
   index,
-  nodes,
 }: {
   node: Node
   level?: number
   index: number
-  nodes: Node[]
 }) => {
-  const { getChildNodes, renderLeaf, renderBranch } = useContext(TreeContext)
-  const childNodes = getChildNodes(node)
+  const { renderLeaf, renderBranch } = useContext(TreeContext)
 
   return Array.isArray(childNodes)
-    ? renderBranch(node, {
+    ? renderBranch(nodeAttributes, {
         level,
         index,
-        nodes,
         children: <TreeNodeList nodes={childNodes} level={level + 1} />,
       })
-    : renderLeaf(node, {
+    : renderLeaf(nodeAttributes, {
         level,
         index,
-        nodes,
       })
 }
 TreeNode.displayName = 'TreeNode'
